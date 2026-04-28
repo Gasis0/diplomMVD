@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <title>МВД Люберцы - Система проверки профпригодности</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0b1a33 0%, #1a3a5c 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка */
+        .header {
+            text-align: center;
+            padding: 50px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .emblem {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px gold;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ffd700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0c0e0;
+            margin-bottom: 30px;
+        }
+
+        /* Кнопка запуска */
+        .start-bot-btn {
+            display: inline-block;
+            padding: 18px 45px;
+            background: linear-gradient(45deg, #2b5a8c, #1e3a5f);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: 2px solid #ffd700;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .start-bot-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(45deg, #1e3a5f, #2b5a8c);
+        }
+
+        .qr-code {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            display: inline-block;
+            border-radius: 15px;
+        }
+
+        .qr-code img {
+            width: 150px;
+            height: 150px;
+        }
+
+        /* Сетка карточек */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffd700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: #d0e0f0;
+        }
+
+        /* Раздел для сотрудников */
+        .employee-section {
+            background: rgba(0, 20, 40, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border-left: 5px solid #ffd700;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #ffd700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            counter-increment: step-counter;
+            position: relative;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 40px;
+            height: 40px;
+            background: #ffd700;
+            color: #0b1a33;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3rem;
+            border: 3px solid white;
+        }
+
+        .step h4 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        /* Таблица данных */
+        .data-table {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 40px 0;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: #ffd700;
+            color: #0b1a33;
+            padding: 15px;
+            font-weight: bold;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Админ панель */
+        .admin-panel {
+            background: linear-gradient(135deg, #1a2a3a 0%, #0a1a2a 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border: 2px solid #ffd700;
+        }
+
+        .admin-credentials {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            border: 1px dashed #ffd700;
+        }
+
+        .admin-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .admin-feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* Тестовые данные */
+        .test-data {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+        }
+
+        .question-sample {
+            background: #1e3a5f;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #ffd700;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .answer {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .answer.correct {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+        }
+
+        /* Футер */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #ffd700;
+            color: #0b1a33;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        /* Стили для чата техподдержки */
+        .support-chat {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px solid #ffd700;
+        }
+        .chat-messages {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+        }
+        .message.bot {
+            align-self: flex-start;
+        }
+        .message.user {
+            align-self: flex-end;
+        }
+        .message .text {
+            padding: 10px 15px;
+            border-radius: 18px;
+            background: #1e3a5f;
+            color: white;
+        }
+        .message.user .text {
+            background: #ffd700;
+            color: #0b1a33;
+        }
+        .message .time {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 4px;
+            margin-left: 8px;
+        }
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .option-btn {
+            background: #2b5a8c;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        .option-btn:hover {
+            background: #ffd700;
+            color: #0b1a33;
+            transform: scale(1.02);
+        }
+        .chat-input {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 30px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            outline: none;
+        }
+        .chat-input input:focus {
+            background: rgba(255,255,255,0.2);
+        }
+        .chat-input button {
+            background: #ffd700;
+            border: none;
+            padding: 0 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #0b1a33;
+        }
+        .chat-input button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .container { padding: 10px; }
+            .table-header, .table-row {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+            .message {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <div class="header">
+            <div class="emblem">⚔️👮⚖️</div>
+            <h1>МВД России по Люберецкому району</h1>
+            <div class="subtitle">Автоматизированная система проверки профессиональной пригодности</div>
+            
+            <div class="cta-container" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; margin-top: 20px;">
+                <a href="https://t.me/MVDguard_bot" class="start-bot-btn" target="_blank" style="margin-bottom: 0;">
+                    🤖 Запустить бота в Telegram
+                </a>
+                <div style="text-align: center;">
+                    <div class="qr-code" style="background: white; padding: 15px; border-radius: 20px; display: inline-block; border: 3px solid #ffd700;">
+                        <img src="qr.png" alt="QR-код для перехода в бота MVDguard_bot"
+                             style="width: 200px; height: 200px; border-radius: 15px; display: block;">
+                    </div>
+                    <p style="color: #ffd700; margin-top: 10px; font-size: 1.1rem;">📱 Наведите камеру для быстрого запуска</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основные возможности -->
+        <h2>⚡ Основные возможности системы</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3>Безопасная авторизация</h3>
+                <p>Вход по номеру служебного удостоверения (6 цифр). Каждый сотрудник имеет уникальный профиль.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧪</div>
+                <h3>Профессиональное тестирование</h3>
+                <p>Проверка аналитических способностей и профессиональных знаний сотрудников МВД.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Детальная статистика</h3>
+                <p>Отслеживание прогресса, история попыток, средние баллы и время прохождения.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚖️</div>
+                <h3>Доступ к УК РФ</h3>
+                <p>Быстрая ссылка на актуальную редакцию Уголовного Кодекса Российской Федерации.</p>
+            </div>
+        </div>
+
+        <!-- Для сотрудников -->
+        <div class="employee-section">
+            <h2>👤 Для сотрудников</h2>
+            <div class="steps">
+                <div class="step">
+                    <h4>Регистрация</h4>
+                    <p>Введите 6-значный номер удостоверения (например: 000001). Система найдёт ваши данные.</p>
+                </div>
+                <div class="step">
+                    <h4>Тестирование</h4>
+                    <p>10 вопросов с вариантами ответов. После ответа вопрос автоматически удаляется из чата.</p>
+                </div>
+                <div class="step">
+                    <h4>Результаты</h4>
+                    <p>Мгновенный результат в процентах, время прохождения, количество попыток.</p>
+                </div>
+                <div class="step">
+                    <h4>История</h4>
+                    <p>Доступ к истории тестов через 24 часа после прохождения.</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px;">
+                <h3>📋 Пример профиля сотрудника</h3>
+                <div class="data-table">
+                    <div class="table-header">
+                        <div>Удостоверение</div>
+                        <div>ФИО</div>
+                        <div>Должность</div>
+                        <div>Статус</div>
+                    </div>
+                    <div class="table-row">
+                        <div>******</div>
+                        <div>Иванов И.И.</div>
+                        <div>Следователь-криминалист</div>
+                        <div>✅ Зарегистрирован</div>
+                    </div>
+                    <div class="table-row">
+                        <div>******</div>
+                        <div>Петров П.П.</div>
+                        <div>Следователь по особо важным делам</div>
+                        <div>✅ Зарегистрирован</div>
+                    </div>
+                    <div class="table-row">
+                        <div>******</div>
+                        <div>Сидоров С.С.</div>
+                        <div>Прокурорский следователь</div>
+                        <div>❌ Не зарегистрирован</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Административная панель -->
+        <div class="admin-panel">
+            <h2>👨‍💼 Панель администратора</h2>
+            <p style="text-align: center; margin-bottom: 30px;">Полный контроль над системой тестирования</p>
+            
+            <div class="admin-credentials">
+                <strong>🔑 Доступ для демонстрации:</strong><br>
+                Логин: <code>ad...</code><br>
+                Пароль: <code>Ad....</code>
+            </div>
+            
+            <div class="admin-features">
+                <div class="admin-feature">👥 Список сотрудников</div>
+                <div class="admin-feature">🎯 Результаты тестов</div>
+                <div class="admin-feature">📊 Статистика системы</div>
+                <div class="admin-feature">🔄 Активность</div>
+                <div class="admin-feature">📝 Управление вопросами</div>
+            </div>
+        </div>
+
+        <!-- Примеры вопросов -->
+        <div class="test-data">
+            <h2>📝 Примеры тестовых заданий</h2>
+            
+            <div class="question-sample">
+                <p><strong>Вопрос 1:</strong> Свидетель А утверждает, что видел подозреваемого в 18:15, а свидетель Б — что в 18:45. При этом камеры видеонаблюдения зафиксировали подозреваемого в другом месте в 18:30. Какие аналитические шаги вы предпримете?</p>
+                <div class="answers">
+                    <div class="answer correct">✓ Противоречие может быть вызвано ошибкой восприятия — требуется объективная проверка</div>
+                    <div class="answer">✗ Свидетели явно врут — привлечь за дачу ложных показаний</div>
+                    <div class="answer">✗ Провести публичное обсуждение между свидетелями</div>
+                    <div class="answer">✗ Игнорировать противоречие</div>
+                </div>
+            </div>
+            
+            <div class="question-sample">
+                <p><strong>Вопрос 2:</strong> По делу о краже имеются: следы обуви, свидетельские показания, запись с камеры. Однако ДНК‑анализ не дал совпадений. Как оценить достаточность доказательств?</p>
+                <div class="answers">
+                    <div class="answer correct">✓ Обвинение возможно только при появлении прямых или индивидуально-определённых доказательств</div>
+                    <div class="answer">✗ Следов и показаний достаточно</div>
+                    <div class="answer">✗ Достаточно только видеозаписи</div>
+                    <div class="answer">✗ Все улики недостоверны из-за ДНК</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 40px 0;">
+            <div style="background: rgba(255,215,0,0.1); padding: 20px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 2.5rem;">👥</div>
+                <div style="font-size: 2rem; color: #ffd700;">5+</div>
+                <div>Сотрудников в базе</div>
+            </div>
+            <div style="background: rgba(255,215,0,0.1); padding: 20px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 2.5rem;">⚡</div>
+                <div style="font-size: 2rem; color: #ffd700;">24/7</div>
+                <div>Доступность</div>
+            </div>
+        </div>
+
+        <!-- Технические особенности -->
+        <div style="background: rgba(0,0,0,0.3); padding: 40px; border-radius: 15px; margin: 40px 0;">
+            <h2>⚙️ Технические особенности</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div>
+                    <span class="badge">🗄️ SQLite</span>
+                    <span class="badge">🤖 Python Telegram Bot</span>
+                    <span class="badge">🔄 AsyncIO</span>
+                </div>
+                <div>
+                    <ul style="list-style-type: none;">
+                        <li>✓ Автоудаление вопросов после ответа</li>
+                        <li>✓ Сохранение времени прохождения</li>
+                        <li>✓ История попыток</li>
+                        <li>✓ Конфиденциальность данных</li>
+                    </ul>
+                </div>
+                <div>
+                    <ul style="list-style-type: none;">
+                        <li>✓ Многоуровневая авторизация</li>
+                        <li>✓ Административная панель</li>
+                        <li>✓ Интеграция с УК РФ</li>
+                        <li>✓ Защита от повторной регистрации</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Команды бота -->
+        <div style="margin: 40px 0;">
+            <h2>📋 Доступные команды</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">/start - Начало работы</div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">/help - Справка</div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">/profile - Мой профиль</div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">/history - История тестов</div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">/stats - Статистика</div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">/uk_rf - УК РФ</div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">/logout - Выход</div>
+                <div style="background: rgba(255,215,0,0.2); padding: 10px; border-radius: 5px;">/admin - Панель администратора</div>
+            </div>
+        </div>
+
+        <!-- Чат техподдержки с возможностью самостоятельно начать общение -->
+        <div class="support-chat">
+            <h2>💬 Чат техподдержки</h2>
+            <p style="text-align: center; margin-bottom: 20px;">Задайте любой вопрос о системе, или напишите «тест» — и я проверю ваши профессиональные знания.</p>
+            <div id="chatMessages" class="chat-messages">
+                <div class="message bot">
+                    <div class="text">👋 Добрый день! Я — виртуальный помощник МВД Люберецкого района. Могу рассказать о системе, подсказать команды или провести тест на профпригодность. Чем могу помочь?</div>
+                    <div class="time">Сейчас</div>
+                </div>
+            </div>
+            <div id="chatInputArea" class="chat-input">
+                <input type="text" id="chatInput" placeholder="Напишите ваше сообщение...">
+                <button id="chatSendBtn">Отправить</button>
+                <button id="restartTestBtn" style="background:#2b5a8c; border:1px solid #ffd700;">📚 Начать тест</button>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer">
+            <p>© 2026 МВД России по Люберецкому району</p>
+            <p>Система проверки профессиональной пригодности | Версия 1.0.0</p>
+            <p style="color: #a0c0e0; font-size: 0.9rem; margin-top: 20px;">
+                Автоматизированная система для оценки аналитических способностей сотрудников<br>
+                и проверки знаний уголовного законодательства РФ
+            </p>
+            <div style="margin-top: 20px;">
+                <span class="badge">⚡ Быстрый запуск</span>
+                <span class="badge">🔒 Безопасно</span>
+                <span class="badge">📱 Доступно 24/7</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ---------- Вопросы для теста ----------
+    const testQuestions = [
+        {
+            text: "Свидетель А утверждает, что видел подозреваемого в 18:15, а свидетель Б — что в 18:45. При этом камеры зафиксировали подозреваемого в другом месте в 18:30. Ваши действия?",
+            options: [
+                "Противоречие – ошибка или искажение, требуется проверка",
+                "Свидетели врут, привлечь за ложь, допросить под давлением",
+                "Провести публичное обсуждение без доп. проверки",
+                "Игнорировать противоречие, продолжить без уточнений"
+            ],
+            correct: 0
+        },
+        {
+            text: "По делу о краже есть следы обуви, показания, запись с камеры, но ДНК‑анализ не дал совпадений. Как оценить доказательства?",
+            options: [
+                "Обвинение только при прямых/индивидуальных доказательствах",
+                "Следы + показания достаточно",
+                "Только прямые доказательства, остальное игнорировать",
+                "Нет ДНК – все улики недостоверны"
+            ],
+            correct: 0
+        },
+        {
+            text: "Следователь получил данные, что подозреваемый может скрыться. Какие меры пресечения предложите?",
+            options: [
+                "Подписка о невыезде, домашний арест, заключение под стражу – в зависимости от рисков (ст.97 УПК)",
+                "Сразу под стражу, лучше перестраховаться",
+                "Добровольно сдать паспорт и обязательство явки",
+                "Не принимать мер – нет прямых доказательств намерений"
+            ],
+            correct: 0
+        },
+        {
+            text: "На месте преступления: разбитая ваза, следы крови, отпечаток пальца. Потерпевший утверждает, что ворвался незнакомец, но на его одежде нет следов борьбы. Что делать?",
+            options: [
+                "Фиксация, экспертиза крови, отпечатка, допрос, изъятие одежды, проверка на взлом",
+                "Кровь и отпечаток – сразу обвинение",
+                "Нет ДНК – остальные улики не имеют значения",
+                "Показания + следы – ждать новых улик"
+            ],
+            correct: 0
+        },
+        {
+            text: "Лицо проникло в квартиру, взяло драгоценности, оставило следы взлома. Квалификация?",
+            options: [
+                "Ч.3 ст.158 УК РФ – кража с проникновением в жилище",
+                "Это грабёж – проникновение уже насилие",
+                "Проник + драгоценности = грабёж (насилие обязательно)",
+                "Без угроз/насилия – кража, даже со взломом"
+            ],
+            correct: 0
+        },
+        {
+            text: "Эксперт подтвердил отпечаток подозреваемого на орудии. Защитник говорит, что след мог быть оставлен ранее. Какие экспертизы назначите?",
+            options: [
+                "Дактилоскопия (давность, перенос), биология, трасология взлома",
+                "Отпечаток уже совпал, другие экспертизы не нужны",
+                "Эксперт подтвердил – сомнения игнорировать",
+                "Только повторная дактилоскопия, остальное неважно"
+            ],
+            correct: 0
+        },
+        {
+            text: "Подозреваемый отказывается отвечать, ссылаясь на ст. 51 Конституции. Следователь угрожает: «Если не расскажете, будем считать виновным». Оцените действия.",
+            options: [
+                "Неправомерно: ст.51 (право молчать), угроза – нарушение ст.9 УПК, признание под принуждением недопустимо",
+                "Угроза – нормальный метод, невиновный не испугается",
+                "Угрозы допустимы в ОРД для признания",
+                "Нарушение прав не влияет на допустимость, если есть другие улики"
+            ],
+            correct: 0
+        }
+    ];
+
+    // Состояние чата
+    let currentQuestionIndex = 0;
+    let testActive = false;      // активен ли тест в данный момент
+    let score = 0;
+    let waitingForAnswer = false; // ожидаем ответа на текущий вопрос (чтобы блокировать текстовый ввод)
+
+    // DOM элементы
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+    const restartTestBtn = document.getElementById('restartTestBtn');
+
+    // Вспомогательная функция для добавления сообщения
+    function addMessage(sender, text, isHtml = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender);
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('text');
+        if (isHtml) {
+            textDiv.innerHTML = text;
+        } else {
+            textDiv.innerText = text;
+        }
+        messageDiv.appendChild(textDiv);
+        const timeSpan = document.createElement('div');
+        timeSpan.classList.add('time');
+        const now = new Date();
+        timeSpan.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        messageDiv.appendChild(timeSpan);
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Функция для отображения вариантов ответа (кнопки)
+    function showOptions(options, correctIndex) {
+        const optionsDiv = document.createElement('div');
+        optionsDiv.classList.add('options');
+        waitingForAnswer = true;  // блокируем текстовый ввод
+        options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.classList.add('option-btn');
+            btn.innerText = opt;
+            btn.dataset.optIndex = idx;
+            btn.addEventListener('click', () => {
+                if (!testActive || !waitingForAnswer) return;
+                // отключаем все кнопки, чтобы нельзя было ответить дважды
+                document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+                const isCorrect = (idx === correctIndex);
+                if (isCorrect) {
+                    score++;
+                    addMessage('bot', '✅ Правильно!');
+                } else {
+                    const correctText = options[correctIndex];
+                    addMessage('bot', `❌ Неправильно. Правильный ответ: ${correctText}`);
+                }
+                currentQuestionIndex++;
+                if (currentQuestionIndex < testQuestions.length) {
+                    setTimeout(() => {
+                        askNextQuestion();
+                    }, 1500);
+                } else {
+                    setTimeout(() => {
+                        const percent = Math.round(score / testQuestions.length * 100);
+                        addMessage('bot', `🏁 Тестирование завершено! Ваш результат: ${score} из ${testQuestions.length} (${percent}%).`);
+                        addMessage('bot', 'Благодарим за участие! Вы можете начать новый тест кнопкой "Начать тест" или задать вопрос в чате.');
+                        testActive = false;
+                        waitingForAnswer = false;
+                        // разблокируем обычный ввод
+                        chatInput.disabled = false;
+                        chatSendBtn.disabled = false;
+                    }, 1500);
+                }
+            });
+            optionsDiv.appendChild(btn);
+        });
+        chatMessages.appendChild(optionsDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function askNextQuestion() {
+        if (!testActive) return;
+        const q = testQuestions[currentQuestionIndex];
+        addMessage('bot', q.text);
+        showOptions(q.options, q.correct);
+    }
+
+    // Запуск теста (сбрасывает состояние и начинает)
+    function startTest() {
+        if (testActive) {
+            addMessage('bot', '⚠️ Тест уже активен. Завершите его или дождитесь окончания.');
+            return;
+        }
+        // Сброс
+        testActive = true;
+        currentQuestionIndex = 0;
+        score = 0;
+        waitingForAnswer = false;
+        // Удаляем возможные старые кнопки (если есть)
+        const oldOptions = document.querySelectorAll('.options');
+        oldOptions.forEach(opt => opt.remove());
+        // Очищаем сообщения от лишнего? Лучше не удалять историю, а добавить разделитель
+        addMessage('bot', '🔍 Начинаем проверку профессиональных компетенций. Всего 7 вопросов.');
+        setTimeout(() => {
+            askNextQuestion();
+        }, 500);
+        // Блокируем текстовый ввод до окончания теста (разблокируется в конце теста или при провале)
+        chatInput.disabled = true;
+        chatSendBtn.disabled = true;
+    }
+
+    // Функция для ответа бота на обычные сообщения (поддержка)
+    function botReplyToUserMessage(userText) {
+        const lower = userText.toLowerCase().trim();
+        if (lower === 'тест' || lower === 'начать тест' || lower === 'запустить тест') {
+            startTest();
+            return;
+        }
+        if (lower === 'привет' || lower === 'здравствуйте' || lower === 'добрый день') {
+            addMessage('bot', 'Здравствуйте! Я помощник системы проверки профпригодности. Могу подсказать команды бота, рассказать о тестировании или дать контакты. Напишите "помощь" или "тест".');
+            return;
+        }
+        if (lower === 'помощь' || lower === 'help' || lower === 'что умеешь') {
+            addMessage('bot', 'Вот что я умею:<br>- ответить на вопросы о системе<br>- провести тест из 7 профессиональных вопросов (напишите "тест")<br>- подсказать команды Telegram-бота (список команд на странице)<br>- дать ссылку на УК РФ или контакты поддержки.', true);
+            return;
+        }
+        if (lower.includes('команды') || lower.includes('команд')) {
+            addMessage('bot', 'Основные команды бота: /start, /help, /profile, /history, /stats, /uk_rf, /logout. Администратор может использовать /admin.');
+            return;
+        }
+        if (lower.includes('ук рф') || lower.includes('уголовный кодекс')) {
+            addMessage('bot', 'Актуальная версия УК РФ доступна по ссылке: https://www.consultant.ru/document/cons_doc_LAW_10699/ (откроется в новой вкладке).');
+            return;
+        }
+        if (lower.includes('контакты') || lower.includes('поддержка')) {
+            addMessage('bot', 'По всем вопросам обращайтесь в отдел кадров МВД Люберецкого района: тел. +7 (495) 555-12-34 или внутренний номер 112. Также можно написать на почту kadr@mvd.lub.ru');
+            return;
+        }
+        if (lower.includes('спасибо')) {
+            addMessage('bot', 'Всегда рад помочь! Обращайтесь.');
+            return;
+        }
+        // Если ничего не подошло
+        addMessage('bot', 'Я вас понял. К сожалению, моя база знаний ограничена технической поддержкой системы. Попробуйте задать вопрос иначе, либо введите "помощь". Чтобы пройти тест, напишите "тест".');
+    }
+
+    // Обработка отправки текстового сообщения пользователем
+    function onUserMessage() {
+        const text = chatInput.value.trim();
+        if (text === "") return;
+        // Если тест активен и ожидается ответ по кнопкам, не даём писать текст
+        if (testActive && waitingForAnswer) {
+            addMessage('bot', 'Пожалуйста, ответьте на текущий вопрос, выбрав один из вариантов кнопками.');
+            chatInput.value = "";
+            return;
+        }
+        // Добавляем сообщение пользователя в чат
+        addMessage('user', text);
+        chatInput.value = "";
+        // Отправляем запрос боту (имитация)
+        setTimeout(() => {
+            botReplyToUserMessage(text);
+        }, 300);
+    }
+
+    // Обработчик клика по кнопке "Начать тест" (аналог кнопки "Пройти заново")
+    function onStartTestButton() {
+        if (testActive) {
+            addMessage('bot', 'Тест уже выполняется. Дождитесь окончания или обновите страницу.');
+            return;
+        }
+        startTest();
+    }
+
+    // Инициализация: включаем ввод, задаём обработчики
+    function initChat() {
+        chatInput.disabled = false;
+        chatSendBtn.disabled = false;
+        chatSendBtn.addEventListener('click', onUserMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') onUserMessage();
+        });
+        restartTestBtn.addEventListener('click', onStartTestButton);
+    }
+
+    initChat();
+    </script>
+</body>
+</html>
